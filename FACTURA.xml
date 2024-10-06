@@ -1,0 +1,112 @@
+<t t-name="account.report_invoice_document">
+    <t t-call="web.external_layout">
+        <!-- Cabecera con datos de la empresa y logo -->
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-6">
+                    <img t-att-src="o.company_id.logo" alt="Logo de la Empresa" class="img-fluid"/>
+                </div>
+                <div class="col-6 text-end">
+                    <h3 t-field="o.company_id.name"/>
+                    <p t-field="o.company_id.partner_id.contact_address"/>
+                </div>
+            </div>
+        </div>
+
+        <!-- Datos del cliente -->
+        <div class="container mt-4">
+            <div class="row">
+                <div class="col-4">
+                    <strong>Nombre:</strong> <span t-field="o.partner_id.name"/>
+                </div>
+                <div class="col-4">
+                    <strong>Apellidos:</strong> <span t-field="o.partner_id.name"/>
+                </div>
+                <div class="col-4">
+                    <strong>Dirección:</strong> <span t-field="o.partner_id.contact_address"/>
+                </div>
+            </div>
+        </div>
+
+        <!-- Estado de la factura -->
+        <div class="container mt-4">
+            <t t-if="o.state == 'posted' and o.payment_state == 'paid'">
+                <h4>Factura "<span t-field="o.name"/>" pagada: "INV/2024/XXXX"</h4>
+            </t>
+            <t t-else="">
+                <h4>Factura "<span t-field="o.name"/>" a la espera de pago</h4>
+            </t>
+        </div>
+
+        <!-- Tabla resumen de productos -->
+        <div class="container mt-4">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Unidades</th>
+                        <th>Tasas</th>
+                        <th>Precio</th>
+                        <th>Precio de las tasas</th>
+                        <th>Total con tasas</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <t t-foreach="o.invoice_line_ids" t-as="line">
+                        <tr>
+                            <td><span t-field="line.name"/></td>
+                            <td><span t-field="line.quantity"/></td>
+                            <td>
+                                <t t-foreach="line.tax_ids" t-as="tax">
+                                    <span t-field="tax.name"/><br/>
+                                </t>
+                            </td>
+                            <td><span t-field="line.price_unit"/></td>
+                            <td><span t-field="line.price_subtotal"/></td>
+                            <td><span t-field="line.price_total"/></td>
+                        </tr>
+                    </t>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Totales -->
+        <div class="container mt-4">
+            <div class="row">
+                <div class="col-4">
+                    <strong>Total Unidades:</strong> <span t-field="o.amount_untaxed"/>
+                </div>
+                <div class="col-4">
+                    <strong>Total Tasas:</strong> <span t-field="o.amount_tax"/>
+                </div>
+                <div class="col-4">
+                    <strong>Total:</strong> <span t-field="o.amount_total"/>
+                </div>
+            </div>
+        </div>
+
+        <!-- Información adicional para facturas pagadas -->
+        <t t-if="o.state == 'posted' and o.payment_state == 'paid'">
+            <div class="container mt-4">
+                <div class="row">
+                    <div class="col-6">
+                        <strong>Capital Amortizado:</strong> <span t-field="o.amount_total"/>
+                    </div>
+                    <div class="col-6">
+                        <strong>Total Pendiente:</strong> 0
+                    </div>
+                </div>
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <strong>Fecha de Pago:</strong> <span t-field="o.invoice_date"/>
+                    </div>
+                </div>
+                <div class="row mt-4">
+                    <div class="col-12 text-center">
+                        <img src="C:\Users\Diana\Desktop\SISTGESTEMPR FRAN\TEMA 3\pagado.png" alt="Animación de Pago" class="img-fluid"/>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </t>
+</t>
